@@ -3,6 +3,7 @@ from optparse import OptionParser
 from crits.core.basescript import CRITsBaseScript
 from crits.core.class_mapper import class_from_value
 from crits.domains.domain import Domain
+from crits.services.core import Service
 
 import time
 
@@ -55,12 +56,11 @@ class CRITsScript(CRITsBaseScript):
         if opts.domain_list:
             with open(opts.domain_list) as infile:
                 for line in infile:
-                    domain_list.append(line.split(','))
+                    domain_list = [x.strip() for x in line.split(',')]
         elif opts.domain:
             domain_list = opts.domain.split(',')
         if opts.verbose:
             self.print_delete_objects(domain_list)
-
 
         error_list = []
         obj_list = []
