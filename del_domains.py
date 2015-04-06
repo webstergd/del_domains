@@ -2,6 +2,9 @@ from optparse import OptionParser
 
 from crits.core.basescript import CRITsBaseScript
 from crits.core.class_mapper import class_from_value
+from crits.domains.domain import Domain
+
+import time
 
 
 class CRITsScript(CRITsBaseScript):
@@ -33,9 +36,7 @@ class CRITsScript(CRITsBaseScript):
             #delete_analysis(task_id, self.username)
             Service.objects(obj.id, obj._meta['crits_type']).delete())
 
-            ###
-            # Add delay
-            ###
+            time.sleep(float(delay))
             run_triage(obj)
 
 
