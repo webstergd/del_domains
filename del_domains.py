@@ -34,7 +34,7 @@ class CRITsScript(CRITsBaseScript):
             # How do I find the task_id
             ###
             #delete_analysis(task_id, self.username)
-            Service.objects(obj.id, obj._meta['crits_type']).delete())
+            Service.objects(obj.id, obj._meta['crits_type'].delete())
 
             time.sleep(float(delay))
             run_triage(obj)
@@ -52,20 +52,20 @@ class CRITsScript(CRITsBaseScript):
 
         domain_list = []
         if opts.domain:
-            domain_list = opts.services.split(',')
+            domain_list = opts.domain.split(',')
             if opts.verbose:
                 self.print_delete_objects(domain_list)
 
-
         error_list = []
-        for domain in domain_list
+        obj_list = []
+        for domain in domain_list:
             #domain_obj = Domain.objects(domain_iexact=domain).first()
             obj = class_from_value(opts.type_, domain)
             if not obj:
                 error_list.append(domain)
             obj_list.append(obj)
         if opts.verbose:
-            self.print_object_stats(obj_list, error_list)
+            self.print_found_objects(obj_list, error_list)
 
         run_cleanup(obj_list, 1)
         print("Done!")
