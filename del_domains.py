@@ -20,7 +20,7 @@ class CRITsScript(CRITsBaseScript):
     def print_found_objects(self, object_list, error_list):
         print "\nObjects found to delete:\n---------------"
         for object_name in object_list:
-            print "    [+] {0}".format(object_name)
+            print "    [+] {0}".format(object_name.id)
         print "\n"
         print "\nObjects not found to delete:\n---------------"
         for object_name in error_list:
@@ -43,6 +43,7 @@ class CRITsScript(CRITsBaseScript):
     def run(self, argv):
         parser = OptionParser()
         parser.add_option('-d', '--domain', dest='domain', help='domain list')
+        parser.add_option('-l', '--domain_list', dest='domain_list', help='domain list')
         parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                             default=False,
                             help='Verbose mode')
@@ -51,10 +52,15 @@ class CRITsScript(CRITsBaseScript):
         (opts, args) = parser.parse_args(argv)
 
         domain_list = []
-        if opts.domain:
+        if opts.domain_list:
+            with open(opts.domain_list) as infile:
+                for line in infile:
+                    domain_list.append(line.split(','))
+        elif opts.domain:
             domain_list = opts.domain.split(',')
-            if opts.verbose:
-                self.print_delete_objects(domain_list)
+        if opts.verbose:
+            self.print_delete_objects(domain_list)
+
 
         error_list = []
         obj_list = []
@@ -67,5 +73,5 @@ class CRITsScript(CRITsBaseScript):
         if opts.verbose:
             self.print_found_objects(obj_list, error_list)
 
-        run_cleanup(obj_list, 1)
+        #run_cleanup(obj_list, 1)
         print("Done!")
