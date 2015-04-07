@@ -29,15 +29,15 @@ class CRITsScript(CRITsBaseScript):
             print "    [+] {0}".format(object_name)
         print "\n"
 
-    def run_analysis_cleanup(self, obj_list, delay):
+    def run_analysis_cleanup(self, obj_list, type_, delay):
         for obj in obj_list:
-            results = AnalysisResult.objects(object_type='Domain', object_id=obj.id)
+            results = AnalysisResult.objects(object_type=type_, object_id=str(obj.id))
 
             for result in results:
                 result.delete()
 
             time.sleep(float(delay))
-            run_triage(obj)
+            run_triage(obj, self.username)
 
 
     def run(self, argv):
@@ -73,5 +73,5 @@ class CRITsScript(CRITsBaseScript):
         if opts.verbose:
             self.print_found_objects(obj_list, error_list)
 
-        self.run_analysis_cleanup(obj_list, 0.2)
+        self.run_analysis_cleanup(obj_list, opts.type_, 0.2)
         print("Done!")
