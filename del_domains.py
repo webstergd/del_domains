@@ -30,8 +30,10 @@ class CRITsScript(CRITsBaseScript):
         print "\n"
 
     def run_analysis_cleanup(self, obj_list, type_, delay):
+        print "\nCleaning Analysis for:\n---------------"
         for obj in obj_list:
             results = AnalysisResult.objects(object_type=type_, object_id=str(obj.id))
+            print("    [+] {0}".format(obj.id))
 
             for result in results:
                 result.delete()
