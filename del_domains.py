@@ -3,7 +3,7 @@ from optparse import OptionParser
 from crits.core.basescript import CRITsBaseScript
 from crits.core.class_mapper import class_from_value
 from crits.domains.domain import Domain
-from crits.services.core import Service
+from crits.services.analysis_result import AnalysisResult
 
 import time
 
@@ -30,12 +30,10 @@ class CRITsScript(CRITsBaseScript):
 
     def run_analysis_cleanup(self, obj_list, delay):
         for obj in obj_list:
+            results = AnalysisResult.objects(object_type='Domain', object_id=obj.id)
 
-            ###
-            # How do I find the task_id
-            ###
-            #delete_analysis(task_id, self.username)
-            Service.objects(obj.id, obj._meta['crits_type'].delete())
+            for result in results:
+                result.delete()
 
             time.sleep(float(delay))
             run_triage(obj)
@@ -69,9 +67,10 @@ class CRITsScript(CRITsBaseScript):
             obj = class_from_value(opts.type_, domain)
             if not obj:
                 error_list.append(domain)
-            obj_list.append(obj)
+            else:
+                obj_list.append(obj)
         if opts.verbose:
             self.print_found_objects(obj_list, error_list)
 
-        #run_cleanup(obj_list, 1)
+        run_analysis_cleanup(obj_list, 0.2)
         print("Done!")
