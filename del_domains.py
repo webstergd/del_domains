@@ -4,6 +4,7 @@ from crits.core.basescript import CRITsBaseScript
 from crits.core.class_mapper import class_from_value
 from crits.domains.domain import Domain
 from crits.services.analysis_result import AnalysisResult
+from crits.services.handlers import run_triage
 
 import time
 
@@ -13,17 +14,17 @@ class CRITsScript(CRITsBaseScript):
         self.username = username
 
     def print_delete_objects(self, object_list):
-        print "\nObjects to delete:\n---------------"
+        print "\nObjects supplied to clean up:\n---------------"
         for object_name in object_list:
             print "    [+] {0}".format(object_name)
         print "\n"
 
     def print_found_objects(self, object_list, error_list):
-        print "\nObjects found to delete:\n---------------"
+        print "\nObjects found to cleanup analysis:\n---------------"
         for object_name in object_list:
             print "    [+] {0}".format(object_name.id)
         print "\n"
-        print "\nObjects not found to delete:\n---------------"
+        print "\nObjects not found to cleanup analysis:\n---------------"
         for object_name in error_list:
             print "    [+] {0}".format(object_name)
         print "\n"
@@ -72,5 +73,5 @@ class CRITsScript(CRITsBaseScript):
         if opts.verbose:
             self.print_found_objects(obj_list, error_list)
 
-        run_analysis_cleanup(obj_list, 0.2)
+        self.run_analysis_cleanup(obj_list, 0.2)
         print("Done!")
