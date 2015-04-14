@@ -1,12 +1,13 @@
 from optparse import OptionParser
 
 from crits.core.basescript import CRITsBaseScript
-from crits.core.class_mapper import class_from_value
+from crits.core.class_mapper import class_from_value, class_from_id
 from crits.domains.domain import Domain
 from crits.services.analysis_result import AnalysisResult
 from crits.services.handlers import run_triage
 
 import time
+import json
 
 
 class CRITsScript(CRITsBaseScript):
@@ -79,9 +80,10 @@ class CRITsScript(CRITsBaseScript):
         if opts.id_list:
             with open(opts.id_list) as infile:
                 for line in infile:
-                    json = json.load(line)
-                    obj_list.append(json['object_id']) 
+                    result = json.loads(line.strip())
+                    obj = class_from_id(opts.type_, result['object_id'])
+                    obj_list.append(obj) 
 
 
-        self.run_analysis_cleanup(obj_list, opts.type_, 0.2)
+        self.run_analysis_cleanup(obj_list, opts.type_, 0.5)
         print("Done!")
