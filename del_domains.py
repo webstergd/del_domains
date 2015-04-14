@@ -44,8 +44,9 @@ class CRITsScript(CRITsBaseScript):
 
     def run(self, argv):
         parser = OptionParser()
-        parser.add_option('-d', '--domain', dest='domain', help='domain list')
+        parser.add_option('-d', '--domain', dest='domain', help='domain')
         parser.add_option('-l', '--domain_list', dest='domain_list', help='domain list')
+        parser.add_option('-i', '--id_list', dest='id_list', help='id list')
         parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                             default=False,
                             help='Verbose mode')
@@ -74,6 +75,13 @@ class CRITsScript(CRITsBaseScript):
                 obj_list.append(obj)
         if opts.verbose:
             self.print_found_objects(obj_list, error_list)
+
+        if opts.id_list:
+            with open(opts.id_list) as infile:
+                for line in infile:
+                    json = json.load(line)
+                    obj_list.append(json['object_id']) 
+
 
         self.run_analysis_cleanup(obj_list, opts.type_, 0.2)
         print("Done!")
