@@ -21,11 +21,11 @@ class CRITsScript(CRITsBaseScript):
         print "\n"
 
     def print_found_objects(self, object_list, error_list):
-        print "\nObjects found to cleanup analysis:\n---------------"
+        print "\nObjects found to cleanup:\n---------------"
         for object_name in object_list:
             print "    [+] {0}".format(object_name.id)
         print "\n"
-        print "\nObjects not found to cleanup analysis:\n---------------"
+        print "\nObjects not found to cleanup:\n---------------"
         for object_name in error_list:
             print "    [+] {0}".format(object_name)
         print "\n"
@@ -64,13 +64,19 @@ class CRITsScript(CRITsBaseScript):
         parser.add_option('--delete', dest='delete', action='store_true',
                             default=False,
                             help='Delete Domains')
+        parser.add_option('--csv', dest='csv', action='store_true',
+                            default=False,
+                            help='Treat file as CSV')
         (opts, args) = parser.parse_args(argv)
 
         domain_list = []
         if opts.domain_list:
             with open(opts.domain_list) as infile:
                 for line in infile:
-                    domain_list = [x.strip() for x in line.split(',')]
+                    if opts.csv:
+                        domain_list = [x.strip() for x in line.split(',')]
+                    else:
+                        domain_list.append(line.strip())
         elif opts.domain:
             domain_list = opts.domain.split(',')
         if opts.verbose:
