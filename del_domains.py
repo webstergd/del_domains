@@ -42,6 +42,14 @@ class CRITsScript(CRITsBaseScript):
             time.sleep(float(delay))
             run_triage(obj, self.username)
 
+    def delete_domains(self, obj_list, type_, delay):
+        print "\nDeleting Domains for:\n---------------"
+        for obj in obj_list:
+            print("    [+] {0}".format(obj.id))
+            obj.delete()
+
+            time.sleep(float(delay))
+
 
     def run(self, argv):
         parser = OptionParser()
@@ -53,6 +61,9 @@ class CRITsScript(CRITsBaseScript):
                             help='Verbose mode')
         parser.add_option('-T', '--type', dest='type_', default='Domain',
                             help='CRITs type query for (default: Domain)')
+        parser.add_option('--delete', dest='delete', action='store_true',
+                            default=False,
+                            help='Delete Domains')
         (opts, args) = parser.parse_args(argv)
 
         domain_list = []
@@ -84,6 +95,8 @@ class CRITsScript(CRITsBaseScript):
                     obj = class_from_id(opts.type_, result['object_id'])
                     obj_list.append(obj) 
 
-
-        self.run_analysis_cleanup(obj_list, opts.type_, 0.5)
+        if opts.delete:
+            self.delete_domains(obj_list, opts.type_, 0.5)
+        else:
+            self.run_analysis_cleanup(obj_list, opts.type_, 0.5)
         print("Done!")
